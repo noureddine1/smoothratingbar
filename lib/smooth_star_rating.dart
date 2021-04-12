@@ -20,7 +20,7 @@ class SmoothStarRating extends StatelessWidget {
   final double spacing;
   SmoothStarRating({
     this.starCount = 5,
-    this.spacing=0.0,
+    this.spacing = 0.0,
     this.rating = 0.0,
     this.defaultIconData,
     this.onRatingChanged,
@@ -35,11 +35,11 @@ class SmoothStarRating extends StatelessWidget {
   }
 
   Widget buildStar(BuildContext context, int index) {
-    Icon icon;
+    Widget icon;
     if (index >= rating) {
       icon = new Icon(
-        defaultIconData != null ? defaultIconData : Icons.star_border,
-        color: borderColor ?? Theme.of(context).primaryColor,
+        Icons.star_rate_rounded,
+        color: Color(0xff4a4a4a).withOpacity(0.5),
         size: size,
       );
     } else if (index > rating - (allowHalfRating ? 0.5 : 1.0) &&
@@ -50,11 +50,29 @@ class SmoothStarRating extends StatelessWidget {
         size: size,
       );
     } else {
-      icon = new Icon(
-        filledIconData != null ? filledIconData : Icons.star,
-        color: color ?? Theme.of(context).primaryColor,
-        size: size,
+      icon = ShaderMask(
+        child: Icon(
+          Icons.star_rate_rounded,
+          size: size,
+          color: Colors.white,
+        ),
+        shaderCallback: (Rect bounds) {
+          final Rect rect = Rect.fromLTRB(0, 0, size, size);
+          return LinearGradient(
+            colors: <Color>[
+              Color(0xfffda701),
+              Color(0xfffdca10),
+            ],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          ).createShader(rect);
+        },
       );
+      // icon = new Icon(
+      //   filledIconData != null ? filledIconData : Icons.star,
+      //   color: color ?? Theme.of(context).primaryColor,
+      //   size: size,
+      // );
     }
 
     return new GestureDetector(
